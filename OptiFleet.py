@@ -1,12 +1,38 @@
 #OptiFleet: Real-Time Fleet Optimistaion using Kruskal's MST
 #purpose: Optimise urban transportation routes in high-demand
 #Author: Kothuru Sai Mahidar
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/Himabindu-Garikapati/hima.git
-git push -u origin main
+
+class OptiFleet:
+    #Core class for Optifleet intended to handle real-time data updates and route optimizations
+    def __init__(self,vertices):
+        self.vertices = vertices
+        self.mst_solver = KruskalMST(vertices)
+        self.data_manager = OptiFleetData()
+    def update_passenger_data(self, start, end,volume):
+        """
+        update passenger volume between location and add as edge in MST
+        :param start: Starting location ID
+        :param end: Ending/Destinaion location ID
+        :param volume: Passenger volume between start and end(weight for edges)
+        """
+        self.data_manager.update_passenger_voulme(start, end, volume):
+        self.mst_solver.update_edge(start, end, volume)
+
+    def build_routes(self):
+        """
+        Build Optimal routes using MST based on current passenger_data
+        :return: List of selected routes with demand between locations
+        """
+        edges = self.data_manager.get_edges_with_demand()
+        for start, end, volume in edges:
+            self.mst_solver.add_edge(start, end, volume)
+        
+        #find and return optimised routes
+        mst_routes = self.mst_solver.find_mst()
+        print("\nOptimal Routes (based on current demand):")
+        for start, end, volume in mst_routes:
+            print(f"Route from {start} to {end} with demand: {volume}")
+        return mst_routes
 
 # Main execution with user input
 if __name__ == "__main__":
