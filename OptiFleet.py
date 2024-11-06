@@ -2,6 +2,100 @@
 #purpose: Optimise urban transportation routes in high-demand
 #Author: Kothuru Sai Mahidar
 
+
+
+class UnionFind:
+    """
+    Union-Find Data Structure for managing disjoint sets in Kruskal's MST algorithm.
+    Keeps track of connected components to avoid cycles in graph.
+    """
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, node):
+        """
+        Find the root representative of the node, applying path compression.
+        :param node: The node to find the root for.
+        """
+        if self.parent[node] != node:
+            self.parent[node] = self.find(self.parent[node])
+        return self.parent[node]
+
+    def union(self, node1, node2):
+        #Union two subsets into a single set.
+        root1 = self.find(node1)
+        root2 = self.find(node2)
+
+        if root1 != root2:
+            if self.rank[root1] > self.rank[root2]:
+                self.parent[root2] = root1
+            elif self.rank[root1] < self.rank[root2]:
+                self.parent[root1] = root2
+            else:
+                self.parent[root2] = root1
+                self.rank[root1] += 1
+
+
+class KruskalMST:
+    """
+    Implementing  Kruskal's(MST) algorithm for route optimization.
+    Using edges with weights that represent passenger demand to create an efficient spanning tree.
+    """
+    def __init__(self, vertices):
+        self.V = vertices  # Total number of vertices (locations)
+        self.edges = []  # Store edges as (start, end, weight) tuples
+
+    def add_edge(self, start, end, weight):
+        """
+        :param start: Starting vertex of the edge.
+        :param end: Ending vertex of the edge.
+        :param weight: Weight (demand) of the edge.
+        """
+        self.edges.append((weight, start, end))
+
+    def find_mst(self):
+        """
+        Execute Kruskal's algorithm to find the MST based on current edges.
+        :return: List of edges in the MST.
+        """
+        self.edges.sort()  # Sort edges by weight (ascending)
+        union_find = UnionFind(self.V)
+        mst = []
+
+        for weight, start, end in self.edges:
+            if union_find.find(start) != union_find.find(end):
+                union_find.union(start, end)
+                mst.append((start, end, weight))
+
+        return mst
+
+
+class OptiFleetData:
+    """
+    Data Manager for real-time passenger volumes, storing demand between locations.
+    Adjusts weights of edges dynamically to reflect current demand.
+    """
+    def __init__(self):
+        self.demand_data = {}
+
+    def update_passenger_volume(self, start, end, volume):
+        """
+        Update or add passenger volume for a specific route.
+        :param start: Starting location ID.
+        :param end: Destination location ID.
+        :param volume: Volume of passengers between the locations.
+        """
+        self.demand_data[(start, end)] = volume
+
+    def get_edges_with_demand(self):
+        """
+        Convert demand data to edge format compatible with MST.
+        :return: List of edges with updated demand weights.
+        """
+        return [(start, end, volume) for (start, end), volume in self.demand_data.items()]
+
+
 class OptiFleet:
     #Core class for Optifleet intended to handle real-time data updates and route optimizations
     def __init__(self,vertices):
