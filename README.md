@@ -1,7 +1,7 @@
 
-
+---
 ### OptiFleet: Intelligent Fleet Optimization for Urban Transportation
-
+---
 **OptiFleet** is an advanced, data-driven fleet management system developed to optimize transportation across high-demand locations in Bangalore. The project leverages Kruskal's algorithm and other graph-based methodologies to dynamically adjust routes based on real-time passenger demand. Through its intelligent design, OptiFleet provides fleet managers with a powerful tool for ensuring efficient, timely service.
 
 
