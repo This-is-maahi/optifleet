@@ -77,6 +77,7 @@ class KruskalMST:
                 self.visualize_step(mst, start, end, weight)
                 time.sleep(1)  # Pause to visualize step-by-step
          
+         
         # Step 3: Display final MST structure
         self.visualize_final_mst(mst)
         plt.ioff()
